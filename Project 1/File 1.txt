@@ -49,3 +49,29 @@ git push
  Writing objects: 100% (4/4), 394 bytes | 197.00 KiB/s, done. 
  Total 4 (delta 0), reused 0 (delta 0)
  To https://github.com/brendasciepura/Computational-Social-Scinece-Projects.git....
+
+Computational-Social-Science-Projects git:(main) ✗ cd "Project 1"
+➜  Project 1 git:(main) ✗ ls
+File 1.txt
+➜  Project 1 git:(main) ✗ git add "File 1.txt"
+➜  Project 1 git:(main) ✗ git commit -m "added lines of code from terminal"
+[main 5d8833a] added lines of code from terminal
+ 1 file changed, 48 insertions(+)
+➜  Project 1 git:(main) ✗ git push
+git sEnumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 1.08 KiB | 1.08 MiB/s, done.
+Total 4 (delta 0), reused 0 (delta 0)
+taTo https://github.com/brendasciepura/Computational-Social-Science-Projects.git
+   391a693..5d8833a  main -> main
+➜  Project 1 git:(main) ✗ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../.DS_Store
+
+nothing added to commit but untracked files present (use "git add" to track)
