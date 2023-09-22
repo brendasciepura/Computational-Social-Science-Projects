@@ -1,3 +1,51 @@
+PART 2: CREATING A GITHUB REPOSITORY 
+
+1. Clone repository to local 
+
+Last login: Thu Sep 14 10:17:16 on ttys000
+(base) brenda@Brendas-MacBook-Air-2 ~ % cd github
+(base) brenda@Brendas-MacBook-Air-2 github % git clone https://github.com/brendasciepura/Computational-Social-Science-Projects.git
+Cloning into 'Computational-Social-Science-Projects'...
+remote: Enumerating objects: 3, one.
+remote: Counting objects: 100%(3.3), done. 
+Remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3.3), done. 
+
+2. Create a folder titled "Project 1"
+
+(base) brenda@Brendas-MacBook-Air-2 github % cd Computational-Social-Science-Projects
+(base) brenda@Brendas-MacBook-Air-2 Computational-Social-Science-Projects %>% mkdir "Project 1"
+(base) brenda@Brendas-MacBook-Air-2 Computational-Social-Science-Projects %>% ls
+(base) brenda@Brendas-MacBook-Air-2 Computational-Social-Science-Projects % ls
+Project 1			README.md			file_with_terminal_code.txt
+
+3. Create a text file within Project 1 folder 
+
+(base) brenda@Brendas-MacBook-Air-2 Computational-Social-Science-Projects % cd "Project 1"
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % touch "File 1.txt"
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % ls
+File 1.txt
+
+4. Edit the text file to include all of the commands you have run so far, as well as commands to add, commit and push changes to your GitHub repo 
+
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % nano "File 1.txt"
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % cat "File 1.txt"
 git add "File 1.txt"
 git commit -m "The first file"
 git push
+
+5. Run such commands 
+
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % git add "File 1.txt"
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % git commit -m "The first file"
+[main 391a693] The first file 
+ 1 file changed, 3 insertions(+)
+ Created mode 100644 Project 1/File 1.txt
+(base) brenda@Brendas-MacBook-Air-2 Project 1 % git push
+ Enumerating objects: 5, done. 
+ Counting objects: 100% (5/5), done.
+ Delta compression using up to 4 threads
+ Compressing objects: 100% (3/3), done.
+ Writing objects: 100% (4/4), 394 bytes | 197.00 KiB/s, done. 
+ Total 4 (delta 0), reused 0 (delta 0)
+ To https://github.com/brendasciepura/Computational-Social-Scinece-Projects.git....
