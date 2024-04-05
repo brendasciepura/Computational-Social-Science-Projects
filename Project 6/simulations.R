@@ -18,9 +18,9 @@ ypsps <- read_csv('/Users/brenda/github/Computational-Social-Science-Projects/Pr
 head(ypsps)
 nrow(ypsps)
 
-##########################
-## Simulation I: NEAREST #
-##########################
+##############################
+## 4.2 Simulation I: NEAREST #
+##############################
 
 # Remove post-treatment covariates
 filtered_vars <- names(ypsps)[!grepl("1973|1982", names(ypsps))]
@@ -101,9 +101,9 @@ simulate_and_get_att_nearest <- function(num_simulations) {
 result_nearest <- simulate_and_get_att_nearest(num_simulations = 1000)
 
 
-##########################
-## Simulation I: OPTIMAL #
-##########################
+##############################
+## 5.2 Simulation I: OPTIMAL #
+##############################
 
 set.seed(3141)
 
