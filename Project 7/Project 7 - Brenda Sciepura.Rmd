@@ -1,7 +1,8 @@
 ---
 title: "Project 7: Difference-in-Differences and Synthetic Control"
 author: "Brenda Sciepura"
-output: html_document
+date: "`r format(Sys.time(), '%B %d, %Y, %H:%M')`"
+output: pdf_document
 ---
 
 ```{r set knitr options, echo = FALSE}
@@ -92,7 +93,8 @@ average_uninsured_population <- medicaid_expansion %>%
 
 ggplot(average_uninsured_population, aes(x = reorder(State, avg_uninsured_pop), y = avg_uninsured_pop)) +
   geom_bar(stat = "identity", fill = "skyblue") +
-  labs(x = "State", y = "Average Uninsured Population", title = "Average Uninsured Population per State Prior to 2014") +
+  labs(x = "State", y = "Average Uninsured Population", 
+       title = "Average Uninsured Population per State Prior to 2014") +
   theme(plot.title = element_text(hjust = 0.5),
       axis.text.x = element_text(angle = 90, hjust = 1))
 
@@ -103,9 +105,11 @@ average_uninsured_population_2020 <- medicaid_expansion %>%
   summarise(avg_uninsured_pop_2020 = mean(uninsured_pop)) %>% 
   filter(avg_uninsured_pop_2020 != "NA")
 
-ggplot(average_uninsured_population_2020, aes(x = reorder(State, avg_uninsured_pop_2020), y = avg_uninsured_pop_2020)) +
+ggplot(average_uninsured_population_2020, aes(x = reorder(State, avg_uninsured_pop_2020), 
+                                              y = avg_uninsured_pop_2020)) +
   geom_bar(stat = "identity", fill = "skyblue") +
-  labs(x = "State", y = "Average Uninsured Population", title = "Average Uninsured Population per State in 2020") +
+  labs(x = "State", y = "Average Uninsured Population", 
+       title = "Average Uninsured Population per State in 2020") +
   theme(plot.title = element_text(hjust = 0.5),
       axis.text.x = element_text(angle = 90, hjust = 1))
 ```
@@ -201,7 +205,7 @@ filter(State %in% c("Iowa", "Louisiana")) %>%
 # Difference-in-Differences estimation
 
 # DiD for: Iowa-Louisiana
-# ----------------------------------------------------------------
+# ---------------------------------------------------
 # create a dataset for Iowa-Louisiana
 il <- 
   medicaid_expansion %>%
@@ -298,21 +302,17 @@ plot(syn)
 data.frame(syn$weights) %>% # coerce to data frame since it's in vector form
   # process 
   # ---------
-  # change index to a column
-  tibble::rownames_to_column('State') %>% # move index from row to column (similar to index in row as in Python)
+  tibble::rownames_to_column('State') %>% 
   filter(syn$weights > 0) %>%
   # plot
   # ---------
   ggplot() +
-  # stat = identity to take the literal value instead of a count for geom_bar()
   geom_bar(aes(x = State, 
                y = syn.weights),
-           stat = 'identity') +  # override count() which is default of geom_bar(), could use geom_col() instead
-  coord_flip() +   # flip to make it more readable
-  # themes
+           stat = 'identity') +  
+  coord_flip() +  
   theme_fivethirtyeight() +
   theme(axis.title = element_text()) +
-  # labels
   ggtitle('Synthetic Control Weights') +
   xlab('State') +
   ylab('Weight') 
@@ -329,7 +329,7 @@ ridge_syn <-
                             State, 
                             year, 
                             medicaid_expansion,
-                            progfunc = "ridge",  # specify 
+                            progfunc = "ridge",  
                             scm = T)
 
 summary(ridge_syn) # same L2 balance, no improvement
@@ -359,47 +359,40 @@ plot(gsynth_syn)
 # barplots of weights
 
 ## plotting weights of donors for ridge 
-data.frame(ridge_syn$weights) %>% # coerce to data frame since it's in vector form
+data.frame(ridge_syn$weights) %>% 
   # process 
   # ---------
-  # change index to a column
-  tibble::rownames_to_column('State') %>% # move index from row to column (similar to index in row as in Python)
+  tibble::rownames_to_column('State') %>%
   filter(ridge_syn.weights >0) %>%
   # plot
   # ---------
   ggplot() +
-  # stat = identity to take the literal value instead of a count for geom_bar()
   geom_bar(aes(x = State, 
                y = ridge_syn.weights),
-           stat = 'identity') +  # override count() which is default of geom_bar(), could use geom_col() instead
-  coord_flip() +   # flip to make it more readable
-  # themes
+           stat = 'identity') +  
+  coord_flip() +  
   theme_fivethirtyeight() +
   theme(axis.title = element_text()) +
-  # labels
   ggtitle('Synthetic Control Weights') +
   xlab('State') +
   ylab('Weight') 
 
 ## plotting weights of donors for GSYN
-data.frame(gsynth_syn$weights) %>% # coerce to data frame since it's in vector form
+data.frame(gsynth_syn$weights) %>% 
   # process 
   # ---------
   # change index to a column
-  tibble::rownames_to_column('State') %>% # move index from row to column (similar to index in row as in Python)
+  tibble::rownames_to_column('State') %>% 
   filter(gsynth_syn.weights >0) %>%
   # plot
   # ---------
   ggplot() +
-  # stat = identity to take the literal value instead of a count for geom_bar()
   geom_bar(aes(x = State, 
                y = gsynth_syn.weights),
-           stat = 'identity') +  # override count() which is default of geom_bar(), could use geom_col() instead
-  coord_flip() +   # flip to make it more readable
-  # themes
+           stat = 'identity') +  
+  coord_flip() +  
   theme_fivethirtyeight() +
   theme(axis.title = element_text()) +
-  # labels
   ggtitle('Synthetic Control Weights') +
   xlab('State') +
   ylab('Weight') 
@@ -444,7 +437,10 @@ summary(multi_syn)
 multi_syn_summ <- summary(multi_syn)
 
 # List of states 
-selected_states <- c("Arizona", "California", "Colorado", "Connecticut", "Florida", "Georgia", "Iowa", "Kansas", "Maryland", "Montana", "Nevada", "New Mexico", "New York", "Texas", "Washington", "West Virginia")  
+selected_states <- c("Arizona", "California", "Colorado", "Connecticut", 
+                     "Florida", "Georgia", "Iowa", "Kansas", "Maryland", 
+                     "Montana", "Nevada", "New Mexico", "New York", 
+                     "Texas", "Washington", "West Virginia")  
 
 # Filter data for selected states
 multi_syn_summ$att <- multi_syn_summ$att %>%
@@ -475,7 +471,7 @@ multi_syn_summ$att %>%
   theme(plot.title = element_text(hjust = 0.5)) +
   xlab('Time') +
   ylab('Uninsured rate') +
-  facet_wrap(~Level)   # facet-wrap by level (state in this case) for clearer presentation
+  facet_wrap(~Level)   
 ```
   
 **Answer:"** In general, the rate of the uninsured population decreased post Medicaid adoption year at the state level. However, the rate of the decrease differs by state. Also, we observe states where the uninsured rate went up post adoption of the policy. This happened, for instance, in Connecticut, Iowa and Maryland. In other states, such as Washington and West Virginia, the uninsured rate went down right after the policy but then it started to go up again. All in all, we see heterogeneity across states. 
@@ -527,4 +523,4 @@ multi_time_cohort_summ$att %>%
 **Answer**: Both of these methods rely on creating a sort of natural control group, they're quasi-experimental methods in nature. Then, it's important to rely on aggregated units like cities, states or countries because they exhibit greater homogeneity with themselves relative to individual-level data, and this mitigates the problem of unobserved heterogeneity within units. This works positively for identifying pre-trends. DID and SC are good methods to identify the effect of policy adoption, which is policy-relevant and many times hard (and sometimes even impossible) to detect with purely experimental methods.
 
 - What role does selection into treatment play in DiD/synthetic control versus regression discontinuity? When would we want to use either method?  
-**Answer**: For RDD selection into treatment has to do with a discontinuity at the cutoff. RDD is sensitive to manipulation around this threshold. If individuals or units have an incentive to manipulate their assignment variable scores to either side of the threshold, it could invalidate the assumption of comparability near the threshold and bias the treatment effect estimates. For DID/SC treatment assignment occurs when a policy change, intervention or natural event happens. For instance, a policy reform can be implemented in different states at different times. In both DID and SC assessing selection into treatment involves studying factors that influence treatment assignment and making sure that they are not systematically relate to the outcome of interest. 
+**Answer**: For RDD selection into treatment has to do with a discontinuity at the cutoff. RDD is sensitive to manipulation around this threshold. If individuals or units have an incentive to manipulate their assignment variable scores to either side of the threshold, it could invalidate the assumption of comparability near the threshold and bias the treatment effect estimates. For DID/SC treatment assignment occurs when a policy change, intervention or natural event happens. For instance, a policy reform can be implemented in different states at different times. In both DID and SC assessing selection into treatment involves studying factors that influence treatment assignment and making sure that they are not systematically relate to the outcome of interest. I don't know if I fully understand the second question, but I think the scenarios to use either method are pretty different. For RDD you need to have a threshold that cannot be manipulated by the individual and you need a lot of observations around that threshold, so I think that if you have those conditions, you'd most likely use RDD. In other words, RDD is suitable when you have a clear threshold that separates units into treatment and control groups, and you want to estimate the causal effect of the treatment near that threshold. DID/SC is used when you have longitudinal data observed over multiple time periods (it can be just two periods, with one control and one treatment unit, or multiple periods when unit become treated at a certain point in time), and you want to estimate the causal effect of an intervention (usually policy adoption/reform, etc.) that occurs at a specific time point.
