@@ -70,9 +70,11 @@ average_rates_prior_2014 <- medicaid_expansion %>%
   group_by(State) %>% 
   summarise(avg_uninsured_rate = mean(uninsured_rate)) 
 
-ggplot(average_rates_prior_2014, aes(x = reorder(State, avg_uninsured_rate), y = avg_uninsured_rate)) +
+ggplot(average_rates_prior_2014, aes(x = reorder(State, avg_uninsured_rate), 
+                                     y = avg_uninsured_rate)) +
   geom_bar(stat = "identity", fill = "skyblue") +
-  labs(x = "State", y = "Average Uninsured Rate (%)", title = "Average Uninsured Rate per State Prior to 2014") +
+  labs(x = "State", y = "Average Uninsured Rate (%)", 
+       title = "Average Uninsured Rate per State Prior to 2014") +
   theme(plot.title = element_text(hjust = 0.5),
       axis.text.x = element_text(angle = 90, hjust = 1))
 ```
@@ -83,7 +85,8 @@ ggplot(average_rates_prior_2014, aes(x = reorder(State, avg_uninsured_rate), y =
 # most uninsured Americans
 
 ## uninsured population prior to 2014
-medicaid_expansion <- medicaid_expansion %>% mutate(uninsured_pop = uninsured_rate * population)
+medicaid_expansion <- medicaid_expansion %>% 
+  mutate(uninsured_pop = uninsured_rate * population)
 
 average_uninsured_population <- medicaid_expansion %>% 
   filter(year < 2014) %>% ## subsetting dataset to the years prior to 2014
@@ -91,7 +94,8 @@ average_uninsured_population <- medicaid_expansion %>%
   summarise(avg_uninsured_pop = mean(uninsured_pop)) %>% 
   filter(avg_uninsured_pop != "NA")
 
-ggplot(average_uninsured_population, aes(x = reorder(State, avg_uninsured_pop), y = avg_uninsured_pop)) +
+ggplot(average_uninsured_population, aes(x = reorder(State, avg_uninsured_pop), 
+                                         y = avg_uninsured_pop)) +
   geom_bar(stat = "identity", fill = "skyblue") +
   labs(x = "State", y = "Average Uninsured Population", 
        title = "Average Uninsured Population per State Prior to 2014") +
@@ -105,8 +109,9 @@ average_uninsured_population_2020 <- medicaid_expansion %>%
   summarise(avg_uninsured_pop_2020 = mean(uninsured_pop)) %>% 
   filter(avg_uninsured_pop_2020 != "NA")
 
-ggplot(average_uninsured_population_2020, aes(x = reorder(State, avg_uninsured_pop_2020), 
-                                              y = avg_uninsured_pop_2020)) +
+ggplot(average_uninsured_population_2020, 
+       aes(x = reorder(State, avg_uninsured_pop_2020),
+           y = avg_uninsured_pop_2020)) +
   geom_bar(stat = "identity", fill = "skyblue") +
   labs(x = "State", y = "Average Uninsured Population", 
        title = "Average Uninsured Population per State in 2020") +
@@ -276,9 +281,10 @@ Do the following:
 
 medicaid_expansion$year_adopted <- substr(medicaid_expansion$Date_Adopted, 1, 4)
 
-medicaid_expansion <- 
+medicaid_expansion_syn <- 
   medicaid_expansion %>%
-  mutate(treatment = if_else(State == "Montana" & year > year_adopted, 1, 0))
+  mutate(treatment = if_else(State == "Montana" & year > year_adopted, 1, 0)) %>% 
+  filter(Date_Adopted >= ymd("2016-01-01")) ## I understand we need to remove states that adopted the policy earlier, otherwise we conaminate the pool of donors, but by doing this we also remain with very few states to contribute to the donor pool, so I'm not sure if this is right
 
 ## State chosen: Montana
 
@@ -286,15 +292,15 @@ syn <-                                                # save object
   augsynth(uninsured_rate ~ treatment,                # 
                             State,                    # unit
                             year,                     # time
-                            medicaid_expansion,       # data
+                            medicaid_expansion_syn,       # data
                             progfunc = "None",        # plain syn control
                             scm = T)                  # synthetic control 
 
 summary(syn)
 plot(syn)
 
-## Average ATT: -0.0111  
-## L2 Imbalance: 0.019
+## Average ATT: -0.00169  
+## L2 Imbalance: 0.032
 ```
 ```{r}
 # view each state's contribution
@@ -318,7 +324,7 @@ data.frame(syn$weights) %>% # coerce to data frame since it's in vector form
   ylab('Weight') 
 ```
 
-**Answer:** Only a few states are contributing to creating a fake counterfactual: West Virginia, Utah, New Mexico, Nevada, Indiana and Alaska. 
+**Answer:** Only Utah and Louisisna are contributing to creating a fake counterfactual.
 
 - Re-run the same analysis but this time use an augmentation (default choices are Ridge, Matrix Completion, and GSynth). Create the same plot and report the average ATT and L2 imbalance.
 
@@ -328,29 +334,29 @@ ridge_syn <-
   augsynth(uninsured_rate ~ treatment, 
                             State, 
                             year, 
-                            medicaid_expansion,
+                            medicaid_expansion_syn,
                             progfunc = "ridge",  
                             scm = T)
 
-summary(ridge_syn) # same L2 balance, no improvement
+summary(ridge_syn) # slightly lower L2 balance, no improvement
 plot(ridge_syn)
 
-## Average ATT Estimate:  -0.0111 
-## L2 balance: 0.019
+## Average ATT Estimate: -0.00193  
+## L2 balance: 0.031
 
 gsynth_syn <- 
   augsynth(uninsured_rate ~ treatment, 
                             State, 
                             year, 
-                            medicaid_expansion,
+                            medicaid_expansion_syn,
                             progfunc = "GSYN",  # specify 
                             scm = T)
 
-summary(gsynth_syn) # same L2 balance, higher ATT 
+summary(gsynth_syn) # slightly higher L2 balance, barely an improvement 
 plot(gsynth_syn)
 
-## Average ATT Estimate: -0.0313
-## L2 balance: 0.019
+## Average ATT Estimate: 0.0354
+## L2 balance: 0.032
 ```
 
 - Plot barplots to visualize the weights of the donors.  
